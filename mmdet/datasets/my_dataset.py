@@ -8,7 +8,7 @@ from .custom import CustomDataset
 @DATASETS.register_module()
 class MyDataset(CustomDataset):
 
-    CLASSES = ('person', 'bicycle', 'car', 'motorcycle')
+    CLASSES = ('wheat')
 
     def load_annotations(self, ann_file):
         ann_list = mmcv.list_from_file(ann_file)

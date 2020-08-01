@@ -208,7 +208,7 @@ data = dict(
     workers_per_gpu=2,  # Worker to pre-fetch data for each single GPU
     train=dict(  # Train dataset config
         type='CocoDataset',  # Type of dataset, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py#L19 for details.
-        ann_file='/content/drive/My Drive/GWD/global-wheat-detection/train.csv',  # Path of annotation file
+        ann_file='/content/drive/My Drive/GWD/coco_train.json',  # Path of annotation file
         img_prefix='/content/drive/My Drive/GWD/fold0/images/train2017/',  # Prefix of image path
         pipeline=[  # pipeline, this is passed by the train_pipeline created before.
             dict(type='LoadImageFromFile'),
@@ -232,7 +232,7 @@ data = dict(
         ]),
     val=dict(  # Validation dataset config
         type='CocoDataset',
-        ann_file='/content/drive/My Drive/GWD/global-wheat-detection/train.csv',
+        ann_file='/content/drive/My Drive/GWD/coco_valid.json',
         img_prefix='/content/drive/My Drive/GWD/fold0/images/val2017/',
         pipeline=[  # Pipeline is passed by test_pipeline created before
             dict(type='LoadImageFromFile'),
@@ -255,7 +255,7 @@ data = dict(
         ]),
     test=dict(  # Test dataset config, modify the ann_file for test-dev/test submission
         type='CocoDataset',
-        ann_file='/content/drive/My Drive/GWD/global-wheat-detection/train.csv',
+        ann_file='/content/drive/My Drive/GWD/coco_test.json',
         img_prefix='/content/drive/My Drive/GWD/global-wheat-detection/test/',
         pipeline=[  # Pipeline is passed by test_pipeline created before
             dict(type='LoadImageFromFile'),

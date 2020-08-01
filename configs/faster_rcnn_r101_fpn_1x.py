@@ -143,7 +143,7 @@ test_cfg = dict(  # Config for testing hyperparameters for rpn and rcnn
         max_per_img=100,  # Max number of detections of each image
         mask_thr_binary=0.5))  # Threshold of mask prediction
 dataset_type = 'CocoDataset'  # Dataset type, this will be used to define the dataset
-data_root = 'data/coco/'  # Root path of data
+data_root = '/content/drive/My Drive/GWD/global-wheat-detection/'  # Root path of data
 img_norm_cfg = dict(  # Image normalization config to normalize the input images
     mean=[123.675, 116.28, 103.53],  # Mean values used to pre-training the pre-trained backbone models
     std=[58.395, 57.12, 57.375],  # Standard variance used to pre-training the pre-trained backbone models
@@ -208,8 +208,8 @@ data = dict(
     workers_per_gpu=2,  # Worker to pre-fetch data for each single GPU
     train=dict(  # Train dataset config
         type='CocoDataset',  # Type of dataset, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py#L19 for details.
-        ann_file='data/coco/annotations/instances_train2017.json',  # Path of annotation file
-        img_prefix='data/coco/train2017/',  # Prefix of image path
+        ann_file='/content/drive/My Drive/GWD/global-wheat-detection/train.csv',  # Path of annotation file
+        img_prefix='/content/drive/My Drive/GWD/fold0/images/train2017/',  # Prefix of image path
         pipeline=[  # pipeline, this is passed by the train_pipeline created before.
             dict(type='LoadImageFromFile'),
             dict(
@@ -232,8 +232,8 @@ data = dict(
         ]),
     val=dict(  # Validation dataset config
         type='CocoDataset',
-        ann_file='data/coco/annotations/instances_val2017.json',
-        img_prefix='data/coco/val2017/',
+        ann_file='/content/drive/My Drive/GWD/global-wheat-detection/train.csv',
+        img_prefix='/content/drive/My Drive/GWD/fold0/images/val2017/',
         pipeline=[  # Pipeline is passed by test_pipeline created before
             dict(type='LoadImageFromFile'),
             dict(
@@ -255,8 +255,8 @@ data = dict(
         ]),
     test=dict(  # Test dataset config, modify the ann_file for test-dev/test submission
         type='CocoDataset',
-        ann_file='data/coco/annotations/instances_val2017.json',
-        img_prefix='data/coco/val2017/',
+        ann_file='/content/drive/My Drive/GWD/global-wheat-detection/train.csv',
+        img_prefix='/content/drive/My Drive/GWD/global-wheat-detection/test/',
         pipeline=[  # Pipeline is passed by test_pipeline created before
             dict(type='LoadImageFromFile'),
             dict(
@@ -307,4 +307,4 @@ log_level = 'INFO'  # The level of logging.
 load_from = None  # load models as a pre-trained model from a given path. This will not resume training.
 resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved.
 workflow = [('train', 1)]  # Workflow for runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once. The workflow trains the model by 12 epochs according to the total_epochs.
-work_dir = 'work_dir'  # Directory to save the model checkpoints and logs for the current experiments.
+work_dir = '/content/drive/My Drive/GWD/weights_mm/'  # Directory to save the model checkpoints and logs for the current experiments.

@@ -1,11 +1,11 @@
 model = dict(
-    type='DetectoRS',  # The name of detector
+    type='CascadeRCNN',  # The name of detector
     pretrained=
     'torchvision://resnext101_32x8d',  # The ImageNet pretrained backbone to be loaded
     backbone=dict(  # The config of backbone
-        type='ResNeXt',  # The type of the backbone, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/models/backbones/resnet.py#L288 for more details.
+        type='DetectoRS_ResNeXt',  # The type of the backbone, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/models/backbones/resnet.py#L288 for more details.
         depth=101,  # The depth of backbone, usually it is 50 or 101 for ResNet and ResNext backbones.
-        num_stages=8,  # Number of stages of the backbone.
+        num_stages=4,  # Number of stages of the backbone.
         out_indices=(0, 1, 2, 3),  # The index of output feature maps produced in each stages
         frozen_stages=1,  # The weights in the first 1 stage are fronzen
         norm_cfg=dict(  # The config of normalization layers.
@@ -287,7 +287,7 @@ optimizer = dict(  # Config used to build optimizer, support all the optimizers 
 optimizer_config = dict(  # Config used to build the optimizer hook, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/optimizer.py#L8 for implementation details.
     grad_clip=None)  # Most of the methods do not use gradient clip
 lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
-    policy='cyclic',  # The policy of scheduler, also support CosineAnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9.
+    policy='step',  # The policy of scheduler, also support CosineAnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9.
     warmup='linear',  # The warmup policy, also support `exp` and `constant`.
     warmup_iters=1600,  # The number of iterations for warmup
     warmup_ratio=0.001,  # The ratio of the starting learning rate used for warmup

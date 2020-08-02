@@ -294,7 +294,7 @@ lr_config = dict(  # Learning rate scheduler config used to register LrUpdater h
     0.001,  # The ratio of the starting learning rate used for warmup
     step=[8, 11])  # Steps to decay the learning rate
 total_epochs = 12  # Total epochs to train the model
-checkpoint_config = dict(  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation.
+checkpoint_config = dict(create_symlink=False,  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation.
     interval=1)  # The save interval is 1
 log_config = dict(  # config to register logger hook
     interval=50,  # Interval to print the log

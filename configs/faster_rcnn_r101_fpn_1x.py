@@ -209,7 +209,7 @@ data = dict(
     train=dict(  # Train dataset config
         type='CocoDataset',  # Type of dataset, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py#L19 for details.
         ann_file='/content/drive/My Drive/GWD/coco_train.json',  # Path of annotation file
-        img_prefix='/content/drive/My Drive/GWD/fold0/images/train2017/',  # Prefix of image path
+        img_prefix='/content/drive/My Drive/GWD/global-wheat-detection/train',  # Prefix of image path
         pipeline=[  # pipeline, this is passed by the train_pipeline created before.
             dict(type='LoadImageFromFile'),
             dict(
@@ -233,7 +233,7 @@ data = dict(
     val=dict(  # Validation dataset config
         type='CocoDataset',
         ann_file='/content/drive/My Drive/GWD/coco_valid.json',
-        img_prefix='/content/drive/My Drive/GWD/fold0/images/val2017/',
+        img_prefix='/content/drive/My Drive/GWD/global-wheat-detection/train',
         pipeline=[  # Pipeline is passed by test_pipeline created before
             dict(type='LoadImageFromFile'),
             dict(

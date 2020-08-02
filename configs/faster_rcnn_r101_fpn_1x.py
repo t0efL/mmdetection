@@ -1,16 +1,16 @@
 model = dict(
-    type='MaskRCNN',  # The name of detector
+    type='DetectoRS',  # The name of detector
     pretrained=
-    'torchvision://resnet50',  # The ImageNet pretrained backbone to be loaded
+    'torchvision://resnext101_32x8d',  # The ImageNet pretrained backbone to be loaded
     backbone=dict(  # The config of backbone
-        type='ResNet',  # The type of the backbone, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/models/backbones/resnet.py#L288 for more details.
-        depth=50,  # The depth of backbone, usually it is 50 or 101 for ResNet and ResNext backbones.
-        num_stages=4,  # Number of stages of the backbone.
+        type='ResNeXt',  # The type of the backbone, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/models/backbones/resnet.py#L288 for more details.
+        depth=101,  # The depth of backbone, usually it is 50 or 101 for ResNet and ResNext backbones.
+        num_stages=8,  # Number of stages of the backbone.
         out_indices=(0, 1, 2, 3),  # The index of output feature maps produced in each stages
         frozen_stages=1,  # The weights in the first 1 stage are fronzen
         norm_cfg=dict(  # The config of normalization layers.
             type='BN',  # Type of norm layer, usually it is BN or GN
-            requires_grad=True),  # Whether to train the gamma and beta in BN
+            requires_grad=False),  # Whether to train the gamma and beta in BN
         norm_eval=True,  # Whether to freeze the statistics in BN
         style='pytorch'),  # The style of backbone, 'pytorch' means that stride 2 layers are in 3x3 conv, 'caffe' means stride 2 layers are in 1x1 convs.
     neck=dict(
@@ -53,7 +53,7 @@ model = dict(
             in_channels=256,  # Input channels for bbox head. This is consistent with the out_channels in roi_extractor
             fc_out_channels=1024,  # Output feature channels of FC layers.
             roi_feat_size=7,  # Size of RoI features
-            num_classes=80,  # Number of classes for classification
+            num_classes=1,  # Number of classes for classification
             bbox_coder=dict(  # Box coder used in the second stage.
                 type='DeltaXYWHBBoxCoder',  # Type of box coder. 'DeltaXYWHBBoxCoder' is applied for most of methods.
                 target_means=[0.0, 0.0, 0.0, 0.0],  # Means used to encode and decode box
@@ -79,7 +79,7 @@ model = dict(
             num_convs=4,  # Number of convolutional layers in mask head.
             in_channels=256,  # Input channels, should be consistent with the output channels of mask roi extractor.
             conv_out_channels=256,  # Output channels of the convolutional layer.
-            num_classes=80,  # Number of class to be segmented.
+            num_classes=1,  # Number of class to be segmented.
             loss_mask=dict(  # Config of loss function for the mask branch.
                 type='CrossEntropyLoss',  # Type of loss used for segmentation
                 use_mask=True,  # Whether to only train the mask in the correct class.
@@ -154,11 +154,11 @@ train_pipeline = [  # Training pipeline
     dict(
         type='LoadAnnotations',  # Second pipeline to load annotations for current image
         with_bbox=True,  # Whether to use bounding box, True for detection
-        with_mask=True,  # Whether to use instance mask, True for instance segmentation
+        with_mask=False,  # Whether to use instance mask, True for instance segmentation
         poly2mask=False),  # Whether to convert the polygon mask to instance mask, set False for acceleration and to save memory
     dict(
         type='Resize',  # Augmentation pipeline that resize the images and their annotations
-        img_scale=(1333, 800),  # The largest scale of image
+        img_scale=(1024, 1024),  # The largest scale of image
         keep_ratio=True
     ),  # whether to keep the ratio between height and width.
     dict(
@@ -169,9 +169,9 @@ train_pipeline = [  # Training pipeline
         mean=[123.675, 116.28, 103.53],  # These keys are the same of img_norm_cfg since the
         std=[58.395, 57.12, 57.375],  # keys of img_norm_cfg are used here as arguments
         to_rgb=True),
-    dict(
-        type='Pad',  # Padding config
-        size_divisor=32),  # The number the padded images should be divisible
+#     dict(
+#         type='Pad',  # Padding config
+#         size_divisor=32),  # The number the padded images should be divisible
     dict(type='DefaultFormatBundle'),  # Default format bundle to gather data in the pipeline
     dict(
         type='Collect',  # Pipeline that decides which keys in the data should be passed to the detector
@@ -181,7 +181,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),  # First pipeline to load images from file path
     dict(
         type='MultiScaleFlipAug',  # An encapsulation that encapsulates the testing augmentations
-        img_scale=(1333, 800),  # Decides the largest scale for testing, used for the Resize pipeline
+        img_scale=(1024, 1024),  # Decides the largest scale for testing, used for the Resize pipeline
         flip=False,  # Whether to flip images during testing
         transforms=[
             dict(type='Resize',  # Use resize augmentation
@@ -192,9 +192,9 @@ test_pipeline = [
                 mean=[123.675, 116.28, 103.53],
                 std=[58.395, 57.12, 57.375],
                 to_rgb=True),
-            dict(
-                type='Pad',  # Padding config to pad images divisable by 32.
-                size_divisor=32),
+#             dict(
+#                 type='Pad',  # Padding config to pad images divisable by 32.
+#                 size_divisor=32),
             dict(
                 type='ImageToTensor',  # convert image to tensor
                 keys=['img']),
@@ -217,14 +217,14 @@ data = dict(
                 with_bbox=True,
                 with_mask=True,
                 poly2mask=False),
-            dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+            dict(type='Resize', img_scale=(1024, 1024), keep_ratio=True),
             dict(type='RandomFlip', flip_ratio=0.5),
             dict(
                 type='Normalize',
                 mean=[123.675, 116.28, 103.53],
                 std=[58.395, 57.12, 57.375],
                 to_rgb=True),
-            dict(type='Pad', size_divisor=32),
+#             dict(type='Pad', size_divisor=32),
             dict(type='DefaultFormatBundle'),
             dict(
                 type='Collect',
@@ -238,7 +238,7 @@ data = dict(
             dict(type='LoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(1333, 800),
+                img_scale=(1024, 1024),
                 flip=False,
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
@@ -248,7 +248,7 @@ data = dict(
                         mean=[123.675, 116.28, 103.53],
                         std=[58.395, 57.12, 57.375],
                         to_rgb=True),
-                    dict(type='Pad', size_divisor=32),
+#                     dict(type='Pad', size_divisor=32),
                     dict(type='ImageToTensor', keys=['img']),
                     dict(type='Collect', keys=['img'])
                 ])
@@ -261,7 +261,7 @@ data = dict(
             dict(type='LoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(1333, 800),
+                img_scale=(1024, 1024),
                 flip=False,
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
@@ -271,29 +271,28 @@ data = dict(
                         mean=[123.675, 116.28, 103.53],
                         std=[58.395, 57.12, 57.375],
                         to_rgb=True),
-                    dict(type='Pad', size_divisor=32),
+#                     dict(type='Pad', size_divisor=32),
                     dict(type='ImageToTensor', keys=['img']),
                     dict(type='Collect', keys=['img'])
                 ])
         ]))
 evaluation = dict(  # The config to build the evaluation hook, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/evaluation/eval_hooks.py#L7 for more details.
     interval=1,  # Evaluation interval
-    metric=['bbox', 'segm'])  # Metrics used during evaluation
+    metric=['bbox'])  # Metrics used during evaluation
 optimizer = dict(  # Config used to build optimizer, support all the optimizers in PyTorch whose arguments are also the same as those in PyTorch
     type='SGD',  # Type of optimizers, refer to https://github.com/open-mmlab/mmdetection/blob/master/mmdet/core/optimizer/default_constructor.py#L13 for more details
-    lr=0.02,  # Learning rate of optimizers, see detail usages of the parameters in the documentaion of PyTorch
-    momentum=0.9,  # Momentum
-    weight_decay=0.0001)  # Weight decay of SGD
+    lr=0.003,  # Learning rate of optimizers, see detail usages of the parameters in the documentaion of PyTorch
+    momentum=0.937,  # Momentum
+    weight_decay=0.001)  # Weight decay of SGD
 optimizer_config = dict(  # Config used to build the optimizer hook, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/optimizer.py#L8 for implementation details.
     grad_clip=None)  # Most of the methods do not use gradient clip
 lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
-    policy='step',  # The policy of scheduler, also support CosineAnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9.
+    policy='cyclic',  # The policy of scheduler, also support CosineAnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9.
     warmup='linear',  # The warmup policy, also support `exp` and `constant`.
-    warmup_iters=500,  # The number of iterations for warmup
-    warmup_ratio=
-    0.001,  # The ratio of the starting learning rate used for warmup
+    warmup_iters=1600,  # The number of iterations for warmup
+    warmup_ratio=0.001,  # The ratio of the starting learning rate used for warmup
     step=[8, 11])  # Steps to decay the learning rate
-total_epochs = 12  # Total epochs to train the model
+total_epochs = 27  # Total epochs to train the model
 checkpoint_config = dict(create_symlink=False,  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation.
     interval=1)  # The save interval is 1
 log_config = dict(  # config to register logger hook
